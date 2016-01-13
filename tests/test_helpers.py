@@ -567,6 +567,10 @@ class TestLogging(object):
         with app.test_request_context():
             assert flask.url_for('index', _external=True, _scheme='https') == 'https://localhost/'
 
+            assert flask.url_for('index', _external=True, _scheme='ws') == 'ws://localhost/'
+
+            assert flask.url_for('index', _external=True) == 'http://localhost/'
+
     def test_url_for_with_scheme_not_external(self):
         app = flask.Flask(__name__)
         @app.route('/')
