@@ -303,7 +303,7 @@ def url_for(endpoint, **values):
     if scheme is not None:
         if not external:
             raise ValueError('When specifying _scheme, _external must be True')
-        url_adapter.url_scheme = scheme
+        old_scheme, url_adapter.url_scheme = url_adapter.url_scheme, scheme
 
     try:
         rv = url_adapter.build(endpoint, values, method=method,
@@ -315,6 +315,9 @@ def url_for(endpoint, **values):
         values['_anchor'] = anchor
         values['_method'] = method
         return appctx.app.handle_url_build_error(error, endpoint, values)
+    finally:
+        if scheme is not None:
+            url_adapter.url_scheme = old_scheme
 
     if anchor is not None:
         rv += '#' + url_quote(anchor)
